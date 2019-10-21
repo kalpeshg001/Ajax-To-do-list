@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Monoton&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/534c53ee69.js" crossorigin="anonymous"></script>
+    <script src="jquery-3.4.1.min.js"></script>
+    <title>To Do List</title>
+    <style>
+        body{
+            background-image: url("https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80");
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        
+        }
+        div.log {
+            margin-top: 20px;
+            padding: 10px;
+            box-shadow: 5px 5px 10px lightgray;
+            border-radius: 5px;
+            width: 330px;
+            height: 410px;
+            border: 1px solid black;
+        }
+
+        h1 {
+            text-align: left;
+            font-family: 'Monoton', cursive;
+            margin-top: 35px;
+            font-size: 0px;
+        }
+
+        .log {
+            left: 150px;
+            right: 150px;
+            float: right;
+        }
+
+        .card-title {
+            padding: 0px;
+            text-align: left;
+        }
+
+        .card-text {
+            text-align: left;
+        }
+
+        input {
+            margin: 9px;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .progress {
+            height: 6px;
+            margin-bottom: 12px;
+        }
+
+        #exp {
+            font-size: 12px;
+        }
+
+        ul {
+            padding-left: 0px;
+            margin-bottom: 2px;
+        }
+
+        .eachList {
+            display: block;
+            margin: 8px;
+            padding: 5px;
+            list-style-type: none;
+            background-color: skyblue;
+        }
+        #addBtn{
+            font-size: 37px;
+            font-weight: bold;
+        }
+
+        .box {
+            margin: 20px;
+            width: 270px;
+            height: auto;
+            text-align: center;
+            background-color: lightgray;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        #second{
+            padding-left: 204px;
+        }
+
+        .add {
+            margin: 20px;
+            width: 270px;
+            height: 256px;
+            text-align: center;
+            background-color: #A8DADB;
+            padding-top: 100px;
+            
+        }
+
+        .far {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>To Do List</h1>
+        <div class="row" id="first">
+            <div class="col-md-5">
+                <div class="card log">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>S'enregister</b></h5>
+                        <p class="card-text">
+                            <input id="nom" type="text" placeholder="Login">
+                            <input id="mp" type="password" placeholder="Mot de passe">
+                            <input id="mpRepeat" type="password" placeholder="Confirmer Mot de passe">
+                            <div class="progress">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 30%"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p id="exp">
+                                Le mot de passe doit avoir au moins 6 caractères et contenir des lettres, chiffres et
+                                caractères spéciaux
+                            </p>
+                        </p>
+                        <button class="btn btn-primary" onclick="register()"><b>Créer un compte
+                                gratuitement</b></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card log">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>Se connecter</b></h5>
+                        <p class="card-text">
+                            <input id="nom2" type="text" placeholder="Login">
+                            <input id="mp2" type="password" placeholder="Mot de passe">
+                        </p>
+                        <button class="btn btn-primary" onclick="login()"><b>Se connecter</b></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row welcome" id="second">
+        </div>
+    </div>
+
+
+</body>
+<script>
+
+    function register() {
+        var credNom = $("#nom").val();
+        var credPass = $("#mp").val();
+        var credPassR = $("#mpRepeat").val();
+        if (credPass === credPassR) {
+            var query = "http://92.222.69.104:80/todo/create/" + credNom + '/' + credPass;
+            $.ajax({
+                url: query,
+            }).done(function (data) {
+                alert("Account has been created for " + credNom + "." + "\nGo ahead and login in to your To Do List!");
+                console.log(data);
+            });
+        }
+        else {
+            alert("Re-confirm your Password");
+        }
+    }
+
+    function login() {
+        var credNom = $("#nom2").val();
+        var credPass = $("#mp2").val();
+        var query2 = "http://92.222.69.104:80/todo/listes";
+
+        $.ajax({
+            url: query2,
+            headers: { 'login': credNom, 'password': credPass },
+
+        }).done(function (data) {
+
+            //hide the first page
+            $("#first").toggle();
+
+            //Collect the related information
+
+            var list = data.todoListes;
+
+            //dispaly todo list cards
+            for (var i = 0; i < list.length; i++) {
+                var listName = list[i].name;
+                var card_box = $("<div class='card box'></div>");
+                card_box.attr("id", `cardbox${i}`);
+                var deleteButton = "<i class='far fa-trash-alt delete'></i>";
+                var editButton = "<i class='far fa-edit edit'></i>";
+                //card_box.text(listName);
+                $(card_box).append("<li class='list-group-item'><h3>" + listName + deleteButton + "</li>")
+                card_box.appendTo("#second");
+                //$("#second").text("Welcome" + credNom + "/n manage your To Do List");
+                
+                var listInput = "<input type='text' id='listInput' placeholder='Enter a new task'>";
+                var inpVal = $("#listInput").val();
+                console.log(inpVal);
+                var addBtn = "<button class='addBtn'>Add</button>";
+                $(`#cardbox${i}`).append( listInput + addBtn );
+                $(".delete").on("click", function () {
+                    $(this).closest(".box").remove();
+                });
+                
+
+                var element = list[i].elements;
+                //display the elements of each todo list
+                for (var j = 0; j < element.length; j++) {
+                    var elementName = element[j];
+                    var listAll = $("<ul />");
+                    //var todo_name = $("<div class='todo_name'></div>").text(elementName);
+                    var todo_name = $(listAll).append("<li class='eachList'>" + elementName + deleteButton + ' ' + editButton + "</li>")
+                    $(`#cardbox${i}`).append(todo_name);
+                    $(".delete").on("click", function () {
+                        $(this).closest("li").remove();
+                    });
+                    $(".edit").on("click", function () {
+                        var editItemBox = "<form class='edit_input_box'><input type='text' class='itembox'></form>";
+                        var originalItem = $(this).val();
+                        //var deleteButton = "<button class='delete btn btn-warning'>Delete</button>";
+                        //var editButton = "<button class='edit btn btn-success'>Edit</button>";
+                       // var twoButtons = "<div class='btn-group pull-right'>" + deleteButton + editButton + "</div>";
+                        $(this).closest("li").replaceWith(editItemBox);
+                        $("form.edit_input_box ").on("submit", function () {
+                            event.preventDefault();
+                            //var checkBox = "<label><input type='checkbox'></label>";
+                            $(this).replaceWith("<li class='eachList'>" + $(".itembox").val() +  deleteButton + ' ' + editButton +  "</div>");
+                        });
+                    });
+                }     
+            
+                /*card_box.append("<button type='button' class='btn btn-primary listOnly'>+</button>");
+                $(".listOnly").on("click", function (e) {
+                    var entry=event.target;
+                    $(entry).before("<input type='text' id='taskname' placeholder='Enter List Name'>");
+                }); */
+
+
+                //$("<div class='card-body' />").appendTo(".card");
+                //$("h5").text(listName).appendTo(".card-body");
+
+            }
+            $(".addBtn").click(function(){
+                //console.log(listAll);
+                var newTag = $("<li class='eachList' id='new'>" + inpVal + deleteButton + ' ' + editButton + "</li>");
+                $(listAll).append(newTag);
+                $(`#cardbox${i}`).append(listAll);
+            });
+
+            
+
+            var add_box = $("<div class='card add'></div>");
+            add_box.append("<button type='button' id='addBtn' class='btn btn-primary'>+</button>").on("click", function () {
+                //alert( "This will be displayed only once." )
+                //console.log(listName, element);
+                $(".add").before("<div class='card box new'></div>");
+                $(".new").html("<input type='text' id='listname' placeholder='Enter List Name'>").keypress(function (event) {
+                    var keycode = (event.keyCode ? event.keyCode : event.which);
+                    if (keycode == '13') {
+                        //alert('You pressed a "enter" key in textbox'); 
+                        listName = $("#listname").val();
+                        $("#listname").after(listName);
+                        $("#listname").toggle();
+                        //console.log(listName);
+                        //list.push(listName);
+                    }
+                });
+
+            });
+            add_box.appendTo("#second");
+
+
+            function animate(event) {
+                var target = event.target;
+                if (target.className == 'card box') {
+                    $(target).css({
+                        "border": "1px solid",
+                        "padding": "10px",
+                        "box-shadow": "5px 10px red"
+                    });
+                }
+            }
+
+            function dianimate(event) {
+                var target = event.target;
+                if (target.className == 'card box') {
+                    $(target).css({
+                        "border": "1px solid",
+                        "padding": "10px",
+                        "box-shadow": "5px 10px gray"
+                    });
+                }
+            }
+
+            $(".box").hover(animate, dianimate);     
+            
+            console.log(data);
+
+        });
+    }
+
+    /*function send(){
+                var nom = $("[name='nom']").val();
+                var prenom = $("[name='prenom']").val();
+                var mail = $("[name='mail']").val();
+                var commentaire = $("[name='commentaire']").val();
+                
+                var obj = {	"nom" : nom,
+                            "prenom":prenom, 
+                            "mail" : mail, 
+                            "commentaire" : commentaire
+                };
+                
+                $.ajax({
+                    type: 'post',
+                    data: JSON.stringify(obj),
+                    contentType: "application/json; charset=utf-8",
+                    url: "http://92.222.69.104:80/exercice/contact"
+                }).done(function(data) {
+                    $("#resultat").text(data);
+                });
+            
+            }*/
+
+
+
+
+
+</script>
+
+</html>
